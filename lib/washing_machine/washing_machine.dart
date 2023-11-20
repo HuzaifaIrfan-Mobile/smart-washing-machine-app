@@ -4,7 +4,17 @@ import 'dart:convert' as convert;
 
 import 'package:http/http.dart' as http;
 
-const hostname = "192.168.10.235";
+import 'dart:async';
+
+const WASHING_MACHINE_TASKS_LABEL = <String>[
+  "Waiting",
+  "Filling",
+  "Washing",
+  "Soaking",
+  "Draining",
+  "Drying",
+  "Ending"
+];
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -16,53 +26,113 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _current_status = "";
+  var hostname = "192.168.10.235";
+
+  bool is_running = false;
+  bool is_hold = false;
+  bool is_lid_closed = false;
+
+  int task_sequence_pointer = 0;
+  int task = 0;
+  int count_down = 0;
+
+  Timer? timer;
+
+  _MyHomePageState() {
+    Duration period = const Duration(seconds: 1);
+    timer = Timer.periodic(period, (arg) {
+      _refreshCurrentStatus();
+    });
+  }
+
+  int toInt(bool val) {
+    return val ? 1 : 0;
+  }
+
+  bool toBool(int val) {
+    return val == 0 ? false : true;
+  }
 
   void _refreshCurrentStatus() async {
     var url = Uri.http(hostname, '/current_status');
 
     // Await the http get response, then decode the json-formatted response.
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse =
-          convert.jsonDecode(response.body) as Map<String, dynamic>;
-      setState(() {
-        _current_status = jsonResponse.toString();
-      });
-      debugPrint('$jsonResponse');
-    } else {
-      debugPrint('Request failed with status: ${response.statusCode}.');
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse =
+            convert.jsonDecode(response.body) as Map<String, dynamic>;
+        setState(() {
+          // _current_status = jsonResponse.toString();
+          is_running = toBool(jsonResponse["is_running"]);
+          is_hold = toBool(jsonResponse["is_hold"]);
+          is_lid_closed = toBool(jsonResponse["is_lid_closed"]);
+
+          task_sequence_pointer = jsonResponse["task_sequence_pointer"];
+          task = jsonResponse["task"];
+          count_down = jsonResponse["count_down"];
+        });
+        debugPrint('$jsonResponse');
+      } else {
+        debugPrint('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      debugPrint('$e');
     }
   }
 
   void _runMachine() async {
     var url = Uri.http(hostname, '/run');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   void _pauseMachine() async {
     var url = Uri.http(hostname, '/pause');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   void _holdMachine() async {
     var url = Uri.http(hostname, '/hold');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   void _skipMachine() async {
     var url = Uri.http(hostname, '/skip');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   void _resetMachine() async {
     var url = Uri.http(hostname, '/reset');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   void _restartMachine() async {
     var url = Uri.http(hostname, '/restart');
-    await http.get(url);
+    try {
+      await http.get(url);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 
   @override
@@ -77,46 +147,75 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              _current_status,
+              WASHING_MACHINE_TASKS_LABEL[task],
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "$count_down",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "Run: $is_running",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "Hold: $is_hold",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "Lid: $is_lid_closed",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FloatingActionButton(
-                  onPressed: _runMachine,
-                  tooltip: 'Run',
-                  child: const Icon(Icons.play_arrow),
-                ),
-                FloatingActionButton(
-                  onPressed: _pauseMachine,
-                  tooltip: 'Pause',
-                  child: const Icon(Icons.stop),
-                ),
-                FloatingActionButton(
-                  onPressed: _holdMachine,
-                  tooltip: 'Hold',
-                  child: const Icon(Icons.pause),
-                ),
-                FloatingActionButton(
-                  onPressed: _skipMachine,
-                  tooltip: 'Skip',
-                  child: const Icon(Icons.skip_next),
+                ButtonBar(
+                  children: [
+                    FloatingActionButton(
+                      onPressed: _runMachine,
+                      tooltip: 'Run',
+                      child: const Icon(Icons.play_arrow),
+                    ),
+                    FloatingActionButton(
+                      onPressed: _pauseMachine,
+                      tooltip: 'Pause',
+                      child: const Icon(Icons.stop),
+                    ),
+                    FloatingActionButton(
+                      onPressed: _holdMachine,
+                      tooltip: 'Hold',
+                      child: const Icon(Icons.pause),
+                    ),
+                    FloatingActionButton(
+                      onPressed: _skipMachine,
+                      tooltip: 'Skip',
+                      child: const Icon(Icons.skip_next),
+                    ),
+                  ],
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FloatingActionButton(
-                  onPressed: _resetMachine,
-                  tooltip: 'Reset',
-                  child: const Icon(Icons.reset_tv),
-                ),
-                FloatingActionButton(
-                  onPressed: _restartMachine,
-                  tooltip: 'Restart',
-                  child: const Icon(Icons.restart_alt),
+                ButtonBar(
+                  children: [
+                    FloatingActionButton(
+                      onPressed: _refreshCurrentStatus,
+                      tooltip: 'Refresh',
+                      child: const Icon(Icons.refresh),
+                    ),
+                    FloatingActionButton(
+                      onPressed: _resetMachine,
+                      tooltip: 'Reset',
+                      child: const Icon(Icons.reset_tv),
+                    ),
+                    FloatingActionButton(
+                      onPressed: _restartMachine,
+                      tooltip: 'Restart',
+                      child: const Icon(Icons.restart_alt),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -125,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _refreshCurrentStatus,
-        tooltip: 'Increment',
+        tooltip: 'Refresh',
         child: const Icon(Icons.refresh),
       ),
     );
