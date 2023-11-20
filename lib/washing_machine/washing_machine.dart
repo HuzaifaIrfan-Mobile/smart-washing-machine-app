@@ -6,6 +6,10 @@ import 'package:http/http.dart' as http;
 
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'drawer.dart';
+
 const WASHING_MACHINE_TASKS_LABEL = <String>[
   "Waiting",
   "Filling",
@@ -26,7 +30,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var hostname = "192.168.10.235";
+  var hostname = "192.168.10.225";
+  TextEditingController hostnameController =
+      TextEditingController(text: "hostname");
 
   bool is_running = false;
   bool is_hold = false;
@@ -43,6 +49,28 @@ class _MyHomePageState extends State<MyHomePage> {
     timer = Timer.periodic(period, (arg) {
       _refreshCurrentStatus();
     });
+  }
+
+  void loadHostname() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hostname = (prefs.getString('hostname') ?? "192.168.10.225");
+      hostnameController.text = hostname;
+    });
+  }
+
+  void saveHostname() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      hostname = hostnameController.text;
+      prefs.setString('hostname', hostname);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadHostname();
   }
 
   int toInt(bool val) {
@@ -142,10 +170,25 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
+      drawer: NavDrawer(
+        restartMachine: () => _restartMachine(),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'hostname',
+              ),
+              controller: hostnameController,
+            ),
+            FloatingActionButton(
+              onPressed: saveHostname,
+              tooltip: 'save',
+              child: const Icon(Icons.save),
+            ),
             Text(
               WASHING_MACHINE_TASKS_LABEL[task],
               style: Theme.of(context).textTheme.headlineMedium,
@@ -210,22 +253,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       tooltip: 'Reset',
                       child: const Icon(Icons.reset_tv),
                     ),
-                    FloatingActionButton(
-                      onPressed: _restartMachine,
-                      tooltip: 'Restart',
-                      child: const Icon(Icons.restart_alt),
-                    ),
+                    // FloatingActionButton(
+                    //   onPressed: _restartMachine,
+                    //   tooltip: 'Restart',
+                    //   child: const Icon(Icons.restart_alt),
+                    // ),
                   ],
                 ),
               ],
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _refreshCurrentStatus,
-        tooltip: 'Refresh',
-        child: const Icon(Icons.refresh),
       ),
     );
   }
