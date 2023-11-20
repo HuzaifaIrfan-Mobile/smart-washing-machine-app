@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
@@ -109,6 +110,28 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _setNextTask(int tmp_task, int tmp_count_down) async {
+    var url = Uri.http(hostname, '/next_washing_machine_task');
+
+    List data = [tmp_task, tmp_count_down, 0, 0];
+    //encode Map to JSON
+    var body = json.encode(data);
+
+    try {
+      var response = await http.post(url,
+          headers: {"Content-Type": "application/json"}, body: body);
+      if (response.statusCode == 200) {
+        var jsonResponse =
+            convert.jsonDecode(response.body) as Map<String, dynamic>;
+        debugPrint('$jsonResponse');
+      } else {
+        debugPrint('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   void _runMachine() async {
     var url = Uri.http(hostname, '/run');
     try {
@@ -172,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: NavDrawer(
         restartMachine: () => _restartMachine(),
+        setNextTask: _setNextTask,
       ),
       body: Center(
         child: Column(
@@ -195,6 +219,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               "$count_down",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "Sequence: $task_sequence_pointer",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
@@ -254,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: const Icon(Icons.reset_tv),
                     ),
                     // FloatingActionButton(
-                    //   onPressed: _restartMachine,
+                    //   onPressed: () => {_setNextTask(3, 60)},
                     //   tooltip: 'Restart',
                     //   child: const Icon(Icons.restart_alt),
                     // ),
