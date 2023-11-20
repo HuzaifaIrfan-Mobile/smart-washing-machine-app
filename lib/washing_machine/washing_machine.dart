@@ -43,6 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int task = 0;
   int count_down = 0;
 
+  String message = "Not Connected";
+
   Timer? timer;
 
   _MyHomePageState() {
@@ -100,13 +102,20 @@ class _MyHomePageState extends State<MyHomePage> {
           task_sequence_pointer = jsonResponse["task_sequence_pointer"];
           task = jsonResponse["task"];
           count_down = jsonResponse["count_down"];
+          message = "Connected";
         });
         debugPrint('$jsonResponse');
       } else {
         debugPrint('Request failed with status: ${response.statusCode}.');
+        setState(() {
+          message = "Not Connected";
+        });
       }
     } catch (e) {
       debugPrint('$e');
+      setState(() {
+        message = "Not Connected";
+      });
     }
   }
 
@@ -214,6 +223,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Icon(Icons.save),
             ),
             Text(
+              message,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
               WASHING_MACHINE_TASKS_LABEL[task],
               style: Theme.of(context).textTheme.headlineMedium,
             ),
@@ -234,7 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              "Lid: $is_lid_closed",
+              "Lid Closed: $is_lid_closed",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Row(
