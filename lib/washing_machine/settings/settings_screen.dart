@@ -14,7 +14,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController hostnameController =
       TextEditingController(text: "hostname");
 
-  SettingsScreenState() {}
+  // SettingsScreenState() {}
 
   void loadHostname() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,14 +73,17 @@ class SettingsScreenState extends State<SettingsScreen> {
               ),
               controller: hostnameController,
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: saveHostname,
               child: const Text('Save Hostname'),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: restartMachine,
               child: const Text('Restart Machine'),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: returnHostname,
               child: const Text('Go back!'),

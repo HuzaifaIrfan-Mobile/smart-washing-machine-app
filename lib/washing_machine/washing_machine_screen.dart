@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'LABELS.dart';
+import 'labels.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -25,7 +25,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
 
   int taskSequencePointer = 0;
   int task = 0;
-  String taskLabel = "empty";
+  String centerLabel = "Status";
   int countDown = 0;
 
   String message = "Not Connected";
@@ -33,10 +33,18 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   Timer? timer;
 
   WashingMachineScreenState() {
+    setupRefreshCurrentStatusTimer();
+  }
+
+  void setupRefreshCurrentStatusTimer() {
     Duration period = const Duration(seconds: 1);
     timer = Timer.periodic(period, (arg) {
       refreshCurrentStatus();
     });
+  }
+
+  void cancelRefreshCurrentStatusTimer() {
+    timer?.cancel();
   }
 
   @override
@@ -55,6 +63,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   }
 
   void openSettingsScreen() async {
+    pauseMachine();
+    cancelRefreshCurrentStatusTimer();
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SettingsScreen()),
@@ -63,6 +73,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
       debugPrint("Returned Hostname: $result");
     }
     loadHostname();
+    setupRefreshCurrentStatusTimer();
   }
 
   int toInt(bool val) {
@@ -89,7 +100,18 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
 
           taskSequencePointer = jsonResponse["task_sequence_pointer"];
           task = jsonResponse["task"];
-          taskLabel = washingMachineTasksLabel[task];
+
+          var taskLabel = washingMachineTasksLabel[task];
+          var runningLabel = isRunning
+              ? isHold
+                  ? "Hold"
+                  : "Running"
+              : "Paused";
+          var lidLabel = isLidClosed ? "Closed" : "Open";
+
+          centerLabel =
+              "$countDown s\n$taskSequencePointer->$taskLabel\n$runningLabel\n$lidLabel";
+
           countDown = jsonResponse["count_down"];
           message = "Connected";
         });
@@ -198,7 +220,12 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  Text(
+                    message,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
                   FloatingActionButton(
+                    heroTag: "openSettings",
                     onPressed: openSettingsScreen,
                     tooltip: 'Open Settings Screen',
                     child: const Icon(Icons.settings),
@@ -216,7 +243,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       percent: 1,
                       progressColor: Colors.indigo,
                       center: Text(
-                        "$countDown s\n$taskLabel",
+                        centerLabel,
                         style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -226,40 +253,85 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                     ),
                     const SizedBox(height: 16),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        cardMenu(
-                          icon: 'assets/images/energy.png',
-                          title: 'ENERGY',
+                        FloatingActionButton(
+                          heroTag: "runMachine",
+                          onPressed: runMachine,
+                          tooltip: 'Run',
+                          child: const Icon(Icons.play_arrow),
                         ),
-                        cardMenu(
-                          onTap: skipMachine,
-                          // onTap: () {
-                          //   Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => const TemperaturePage(),
-                          //     ),
-                          //   );
-                          // },
-                          icon: 'assets/images/temperature.png',
-                          title: 'TEMPERATURE',
-                          color: Colors.indigoAccent,
-                          fontColor: Colors.white,
+                        FloatingActionButton(
+                          heroTag: "pauseMachine",
+                          onPressed: pauseMachine,
+                          tooltip: 'Pause',
+                          child: const Icon(Icons.stop),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "holdMachine",
+                          onPressed: holdMachine,
+                          tooltip: 'Hold',
+                          child: const Icon(Icons.pause),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "skipMachine",
+                          onPressed: skipMachine,
+                          tooltip: 'Skip',
+                          child: const Icon(Icons.skip_next),
                         ),
                       ],
                     ),
                     const SizedBox(height: 28),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        cardMenu(
-                          icon: 'assets/images/water.png',
-                          title: 'WATER',
+                        FloatingActionButton(
+                          heroTag: "refreshCurrentStatus",
+                          onPressed: refreshCurrentStatus,
+                          tooltip: 'Refresh',
+                          child: const Icon(Icons.refresh),
                         ),
-                        cardMenu(
-                          icon: 'assets/images/entertainment.png',
-                          title: 'ENTERTAINMENT',
+                        FloatingActionButton(
+                          heroTag: "resetMachine",
+                          onPressed: resetMachine,
+                          tooltip: 'Reset',
+                          child: const Icon(Icons.reset_tv),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 28),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FloatingActionButton(
+                          heroTag: "FillingTask",
+                          onPressed: () => {setNextTask(1, 600)},
+                          tooltip: 'Filling',
+                          child: const Icon(Icons.water_drop),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "WashingTask",
+                          onPressed: () => {setNextTask(2, 300)},
+                          tooltip: 'Washing',
+                          child: const Icon(Icons.wash),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "SoakingTask",
+                          onPressed: () => {setNextTask(3, 300)},
+                          tooltip: 'Soaking',
+                          child: const Icon(Icons.pause),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "DrainingTask",
+                          onPressed: () => {setNextTask(4, 300)},
+                          tooltip: 'Draining',
+                          child: const Icon(Icons.exit_to_app),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "DryingTask",
+                          onPressed: () => {setNextTask(5, 120)},
+                          tooltip: 'Drying',
+                          child: const Icon(Icons.dry),
                         ),
                       ],
                     ),
@@ -272,57 +344,5 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
         ),
       ),
     );
-
-    // @override
-    // Widget build(BuildContext context) {
-    //   return Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('Washing Machine'),
-    //     ),
-    //     body: Center(
-    //       child: Row(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: [
-    //           ElevatedButton(
-    //             onPressed: openSettingsScreen,
-    //             child: const Text('Settings'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   );
-    // }
   }
-}
-
-Widget cardMenu({
-  required String title,
-  required String icon,
-  VoidCallback? onTap,
-  Color color = Colors.white,
-  Color fontColor = Colors.grey,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 36,
-      ),
-      width: 156,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        children: [
-          Image.asset(icon),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, color: fontColor),
-          )
-        ],
-      ),
-    ),
-  );
 }
