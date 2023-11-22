@@ -220,10 +220,6 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
                   FloatingActionButton(
                     heroTag: "openSettings",
                     onPressed: openSettingsScreen,
@@ -231,6 +227,13 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                     child: const Icon(Icons.settings),
                   ),
                 ],
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  message,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
               Expanded(
                 child: ListView(
