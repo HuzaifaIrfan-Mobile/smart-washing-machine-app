@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'washing_machine/washing_machine.dart';
+import 'washing_machine/washing_machine_screen.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:wakelock/wakelock.dart';
@@ -12,11 +12,11 @@ void main() {
     Wakelock.enable();
   }
 
-  runApp(const MyApp());
+  runApp(const WashingMachineApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WashingMachineApp extends StatelessWidget {
+  const WashingMachineApp({super.key});
 
   // @override
   // void dispose() {
@@ -33,7 +33,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Smart Washing Machine App'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const WashingMachineScreen(),
+      },
     );
   }
 }
