@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 
 import 'labels.dart';
 
+import 'settings/defaults.dart';
+
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class WashingMachineScreen extends StatefulWidget {
@@ -17,7 +19,12 @@ class WashingMachineScreen extends StatefulWidget {
 }
 
 class WashingMachineScreenState extends State<WashingMachineScreen> {
-  var hostname = "192.168.10.225";
+  var hostname = defaultHostname;
+  var fillingTaskCountdown = defaultFillingTaskCountdown;
+  var washingTaskCountdown = defaultWashingTaskCountdown;
+  var soakingTaskCountdown = defaultSoakingTaskCountdown;
+  var drainingTaskCountdown = defaultDrainingTaskCountdown;
+  var dryingTaskCountdown = defaultDryingTaskCountdown;
 
   bool isRunning = false;
   bool isHold = false;
@@ -50,16 +57,37 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   @override
   void initState() {
     super.initState();
-    loadHostname();
+    loadSettings();
     // debugPrint('WashingMachineScreen');
   }
 
-  void loadHostname() async {
+  void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      hostname = (prefs.getString('hostname') ?? "192.168.10.225");
+      hostname = (prefs.getString('hostname') ?? defaultHostname);
+
+      fillingTaskCountdown = (prefs.getString('fillingTaskCountdown') ??
+          defaultFillingTaskCountdown);
+
+      washingTaskCountdown = (prefs.getString('washingTaskCountdown') ??
+          defaultWashingTaskCountdown);
+
+      soakingTaskCountdown = (prefs.getString('soakingTaskCountdown') ??
+          defaultSoakingTaskCountdown);
+
+      drainingTaskCountdown = (prefs.getString('drainingTaskCountdown') ??
+          defaultDrainingTaskCountdown);
+
+      dryingTaskCountdown = (prefs.getString('dryingTaskCountdown') ??
+          defaultDryingTaskCountdown);
     });
-    debugPrint("Loaded Hostname: $hostname");
+    debugPrint("Loaded hostname: $hostname");
+
+    debugPrint("Loaded fillingTaskCountdown: $fillingTaskCountdown");
+    debugPrint("Loaded washingTaskCountdown: $washingTaskCountdown");
+    debugPrint("Loaded soakingTaskCountdown: $soakingTaskCountdown");
+    debugPrint("Loaded drainingTaskCountdown: $drainingTaskCountdown");
+    debugPrint("Loaded dryingTaskCountdown: $dryingTaskCountdown");
   }
 
   void openSettingsScreen() async {
@@ -72,7 +100,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     if (result != null) {
       debugPrint("Returned Hostname: $result");
     }
-    loadHostname();
+    loadSettings();
     setupRefreshCurrentStatusTimer();
   }
 
@@ -308,31 +336,37 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       children: [
                         FloatingActionButton(
                           heroTag: "FillingTask",
-                          onPressed: () => {setNextTask(1, 600)},
+                          onPressed: () =>
+                              {setNextTask(1, int.parse(fillingTaskCountdown))},
                           tooltip: 'Filling',
                           child: const Icon(Icons.water_drop),
                         ),
                         FloatingActionButton(
                           heroTag: "WashingTask",
-                          onPressed: () => {setNextTask(2, 300)},
+                          onPressed: () =>
+                              {setNextTask(2, int.parse(washingTaskCountdown))},
                           tooltip: 'Washing',
                           child: const Icon(Icons.wash),
                         ),
                         FloatingActionButton(
                           heroTag: "SoakingTask",
-                          onPressed: () => {setNextTask(3, 300)},
+                          onPressed: () =>
+                              {setNextTask(3, int.parse(soakingTaskCountdown))},
                           tooltip: 'Soaking',
                           child: const Icon(Icons.pause),
                         ),
                         FloatingActionButton(
                           heroTag: "DrainingTask",
-                          onPressed: () => {setNextTask(4, 300)},
+                          onPressed: () => {
+                            setNextTask(4, int.parse(drainingTaskCountdown))
+                          },
                           tooltip: 'Draining',
                           child: const Icon(Icons.exit_to_app),
                         ),
                         FloatingActionButton(
                           heroTag: "DryingTask",
-                          onPressed: () => {setNextTask(5, 120)},
+                          onPressed: () =>
+                              {setNextTask(5, int.parse(dryingTaskCountdown))},
                           tooltip: 'Drying',
                           child: const Icon(Icons.dry),
                         ),
