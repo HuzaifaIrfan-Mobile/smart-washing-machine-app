@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 const washingMachineTasksLabel = <String>[
-  "Waiting",
-  "Filling",
-  "Washing",
-  "Soaking",
-  "Draining",
-  "Drying",
-  "Ending"
+  "Wait",
+  "Fill",
+  "Wash",
+  "Soak",
+  "Drain",
+  "Dry",
+  "End"
 ];
 
 const washingMachineTasksIcons = <ImageIcon>[

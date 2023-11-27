@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_washing_machine_app/washing_machine/task_sequence_widget.dart';
 import 'settings/settings_screen.dart';
 import 'dart:async';
 
@@ -22,10 +23,10 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   }
 
   void setupRefreshCurrentStatusTimer() {
+    WashingMachine.instance.getTaskSequence();
     Duration period = const Duration(seconds: 1);
     timer = Timer.periodic(period, (arg) {
       WashingMachine.instance.refreshCurrentStatus();
-      // WashingMachine.instance.getTaskSequence();
       setState(() {});
     });
   }
@@ -96,7 +97,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     CircularPercentIndicator(
                       radius: 150,
                       lineWidth: 24,
@@ -141,7 +142,11 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         ),
                         FloatingActionButton(
                           heroTag: "resetMachine",
-                          onPressed: WashingMachine.instance.resetMachine,
+                          onPressed: () {
+                            WashingMachine.instance.refreshCurrentStatus();
+                            WashingMachine.instance.getTaskSequence();
+                            WashingMachine.instance.resetMachine;
+                          },
                           tooltip: 'Reset',
                           child: const Icon(Icons.reset_tv),
                         ),
@@ -203,7 +208,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 16),
+                    taskSequenceView(),
                   ],
                 ),
               ),

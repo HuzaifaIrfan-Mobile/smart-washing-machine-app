@@ -31,7 +31,7 @@ class WashingMachine {
   String centerLabel = "Status";
   int countDown = 0;
 
-  List taskSequence = [
+  List<List<int>> taskSequence = [
     [0, 60, 0, 0],
     [0, 60, 0, 0],
     [0, 60, 0, 0],
@@ -47,7 +47,7 @@ class WashingMachine {
     [0, 60, 0, 0],
     [0, 60, 0, 0],
     [0, 60, 0, 0],
-    [0, 60, 0, 0]
+    [0, 60, 0, 0],
   ];
 
   String message = "Not Connected";
@@ -109,7 +109,13 @@ class WashingMachine {
 
         taskSequencePointer = jsonResponse["task_sequence_pointer"];
 
-        taskSequence = jsonResponse["task_sequence"];
+        var tmpTaskSequence = jsonResponse["task_sequence"];
+
+        for (int i = 0; i < 16; i++) {
+          for (int j = 0; j < 4; j++) {
+            taskSequence[i][j] = tmpTaskSequence[i][j];
+          }
+        }
 
         debugPrint('$jsonResponse');
       } else {
@@ -127,7 +133,7 @@ class WashingMachine {
     var url = Uri.http(hostname, '/change_washing_machine_task_sequence');
 
     // List data = [tmpTask, tmpCountDown, 0, 0];
-    // List tmpTaskSequence = [
+    //  List<List<int>> tmpTaskSequence = [
     //   [0, 60, 0, 0],
     //   [0, 60, 0, 0],
     //   [0, 60, 0, 0],
@@ -250,12 +256,10 @@ class WashingMachine {
   void refreshCurrentStatus() async {
     var url = Uri.http(hostname, '/current_status');
 
-    // Await the http get response, then decode the json-formatted response.
     try {
       var response = await http.get(url);
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        // _current_status = jsonResponse.toString();
         isRunning = toBool(jsonResponse["is_running"]);
         isHold = toBool(jsonResponse["is_hold"]);
         isLidClosed = toBool(jsonResponse["is_lid_closed"]);
