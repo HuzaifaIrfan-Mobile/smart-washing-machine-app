@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 import 'defaults.dart';
+
+import '../washing_machine.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,13 +12,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  var hostname = defaultHostname;
-  var fillingTaskCountdown = defaultFillingTaskCountdown;
-  var washingTaskCountdown = defaultWashingTaskCountdown;
-  var soakingTaskCountdown = defaultSoakingTaskCountdown;
-  var drainingTaskCountdown = defaultDrainingTaskCountdown;
-  var dryingTaskCountdown = defaultDryingTaskCountdown;
-
   TextEditingController hostnameController =
       TextEditingController(text: defaultHostname);
 
@@ -36,67 +29,45 @@ class SettingsScreenState extends State<SettingsScreen> {
   // SettingsScreenState() {}
 
   void loadSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    WashingMachine.instance.loadSettings();
     setState(() {
-      hostname = (prefs.getString('hostname') ?? defaultHostname);
-      hostnameController.text = hostname;
+      hostnameController.text = WashingMachine.instance.hostname;
 
-      fillingTaskCountdown = (prefs.getString('fillingTaskCountdown') ??
-          defaultFillingTaskCountdown);
-      fillingTaskCountdownController.text = fillingTaskCountdown;
-      washingTaskCountdown = (prefs.getString('washingTaskCountdown') ??
-          defaultWashingTaskCountdown);
-      washingTaskCountdownController.text = washingTaskCountdown;
-      soakingTaskCountdown = (prefs.getString('soakingTaskCountdown') ??
-          defaultSoakingTaskCountdown);
-      soakingTaskCountdownController.text = soakingTaskCountdown;
-      drainingTaskCountdown = (prefs.getString('drainingTaskCountdown') ??
-          defaultDrainingTaskCountdown);
-      drainingTaskCountdownController.text = drainingTaskCountdown;
-      dryingTaskCountdown = (prefs.getString('dryingTaskCountdown') ??
-          defaultDryingTaskCountdown);
-      dryingTaskCountdownController.text = dryingTaskCountdown;
+      fillingTaskCountdownController.text =
+          WashingMachine.instance.fillingTaskCountdown;
+      washingTaskCountdownController.text =
+          WashingMachine.instance.washingTaskCountdown;
+      soakingTaskCountdownController.text =
+          WashingMachine.instance.soakingTaskCountdown;
+      drainingTaskCountdownController.text =
+          WashingMachine.instance.drainingTaskCountdown;
+      dryingTaskCountdownController.text =
+          WashingMachine.instance.dryingTaskCountdown;
     });
-    debugPrint("Loaded hostname: $hostname");
-
-    debugPrint("Loaded fillingTaskCountdown: $fillingTaskCountdown");
-    debugPrint("Loaded washingTaskCountdown: $washingTaskCountdown");
-    debugPrint("Loaded soakingTaskCountdown: $soakingTaskCountdown");
-    debugPrint("Loaded drainingTaskCountdown: $drainingTaskCountdown");
-    debugPrint("Loaded dryingTaskCountdown: $dryingTaskCountdown");
   }
 
   void saveSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      hostname = hostnameController.text;
-      prefs.setString('hostname', hostname);
-
-      fillingTaskCountdown = fillingTaskCountdownController.text;
-      prefs.setString('fillingTaskCountdown', fillingTaskCountdown);
-      washingTaskCountdown = washingTaskCountdownController.text;
-      prefs.setString('washingTaskCountdown', washingTaskCountdown);
-      soakingTaskCountdown = soakingTaskCountdownController.text;
-      prefs.setString('soakingTaskCountdown', soakingTaskCountdown);
-      drainingTaskCountdown = drainingTaskCountdownController.text;
-      prefs.setString('drainingTaskCountdown', drainingTaskCountdown);
-      dryingTaskCountdown = dryingTaskCountdownController.text;
-      prefs.setString('dryingTaskCountdown', dryingTaskCountdown);
+      WashingMachine.instance.hostname = hostnameController.text;
+      WashingMachine.instance.fillingTaskCountdown =
+          fillingTaskCountdownController.text;
+      WashingMachine.instance.washingTaskCountdown =
+          washingTaskCountdownController.text;
+      WashingMachine.instance.soakingTaskCountdown =
+          soakingTaskCountdownController.text;
+      WashingMachine.instance.drainingTaskCountdown =
+          drainingTaskCountdownController.text;
+      WashingMachine.instance.dryingTaskCountdown =
+          dryingTaskCountdownController.text;
     });
 
-    debugPrint("Saved hostname: $hostname");
-
-    debugPrint("Saved fillingTaskCountdown: $fillingTaskCountdown");
-    debugPrint("Saved washingTaskCountdown: $washingTaskCountdown");
-    debugPrint("Saved soakingTaskCountdown: $soakingTaskCountdown");
-    debugPrint("Saved drainingTaskCountdown: $drainingTaskCountdown");
-    debugPrint("Saved dryingTaskCountdown: $dryingTaskCountdown");
+    WashingMachine.instance.saveSettings();
 
     loadSettings();
   }
 
   void returnToHome() {
-    Navigator.pop(context, hostname);
+    Navigator.pop(context, WashingMachine.instance.hostname);
   }
 
   @override
@@ -104,17 +75,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     loadSettings();
     debugPrint('SettingsScreen');
-  }
-
-  void restartMachine() async {
-    debugPrint("Restart Machine");
-    var url = Uri.http(hostname, '/restart');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
-    debugPrint("Restarted Machine");
   }
 
   @override
@@ -187,7 +147,9 @@ class SettingsScreenState extends State<SettingsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: restartMachine,
+                  onPressed: () {
+                    WashingMachine.instance.restartMachine();
+                  },
                   child: const Text('Restart Machine'),
                 ),
                 ElevatedButton(
@@ -202,33 +164,3 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-
-// Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             TextField(
-//               decoration: const InputDecoration(
-//                 border: OutlineInputBorder(),
-//                 hintText: 'hostname',
-//               ),
-//               controller: hostnameController,
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: saveSettings,
-//               child: const Text('Save Settings'),
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: restartMachine,
-//               child: const Text('Restart Machine'),
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: returnToHome,
-//               child: const Text('Go back!'),
-//             ),
-//           ],
-//         ),
-//       ),

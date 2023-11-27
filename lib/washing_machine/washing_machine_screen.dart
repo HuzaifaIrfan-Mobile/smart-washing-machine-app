@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'settings/settings_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
-import 'labels.dart';
-
-import 'settings/defaults.dart';
-
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+import 'washing_machine.dart';
 
 class WashingMachineScreen extends StatefulWidget {
   const WashingMachineScreen({super.key});
@@ -19,24 +13,6 @@ class WashingMachineScreen extends StatefulWidget {
 }
 
 class WashingMachineScreenState extends State<WashingMachineScreen> {
-  var hostname = defaultHostname;
-  var fillingTaskCountdown = defaultFillingTaskCountdown;
-  var washingTaskCountdown = defaultWashingTaskCountdown;
-  var soakingTaskCountdown = defaultSoakingTaskCountdown;
-  var drainingTaskCountdown = defaultDrainingTaskCountdown;
-  var dryingTaskCountdown = defaultDryingTaskCountdown;
-
-  bool isRunning = false;
-  bool isHold = false;
-  bool isLidClosed = false;
-
-  int taskSequencePointer = 0;
-  int task = 0;
-  String centerLabel = "Status";
-  int countDown = 0;
-
-  String message = "Not Connected";
-
   Timer? timer;
 
   WashingMachineScreenState() {
@@ -46,7 +22,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   void setupRefreshCurrentStatusTimer() {
     Duration period = const Duration(seconds: 1);
     timer = Timer.periodic(period, (arg) {
-      refreshCurrentStatus();
+      WashingMachine.instance.refreshCurrentStatus();
+      setState(() {});
     });
   }
 
@@ -57,41 +34,12 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   @override
   void initState() {
     super.initState();
-    loadSettings();
+    WashingMachine.instance.loadSettings();
     // debugPrint('WashingMachineScreen');
   }
 
-  void loadSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      hostname = (prefs.getString('hostname') ?? defaultHostname);
-
-      fillingTaskCountdown = (prefs.getString('fillingTaskCountdown') ??
-          defaultFillingTaskCountdown);
-
-      washingTaskCountdown = (prefs.getString('washingTaskCountdown') ??
-          defaultWashingTaskCountdown);
-
-      soakingTaskCountdown = (prefs.getString('soakingTaskCountdown') ??
-          defaultSoakingTaskCountdown);
-
-      drainingTaskCountdown = (prefs.getString('drainingTaskCountdown') ??
-          defaultDrainingTaskCountdown);
-
-      dryingTaskCountdown = (prefs.getString('dryingTaskCountdown') ??
-          defaultDryingTaskCountdown);
-    });
-    debugPrint("Loaded hostname: $hostname");
-
-    debugPrint("Loaded fillingTaskCountdown: $fillingTaskCountdown");
-    debugPrint("Loaded washingTaskCountdown: $washingTaskCountdown");
-    debugPrint("Loaded soakingTaskCountdown: $soakingTaskCountdown");
-    debugPrint("Loaded drainingTaskCountdown: $drainingTaskCountdown");
-    debugPrint("Loaded dryingTaskCountdown: $dryingTaskCountdown");
-  }
-
   void openSettingsScreen() async {
-    pauseMachine();
+    WashingMachine.instance.pauseMachine();
     cancelRefreshCurrentStatusTimer();
     final result = await Navigator.push(
       context,
@@ -100,130 +48,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     if (result != null) {
       debugPrint("Returned Hostname: $result");
     }
-    loadSettings();
+    WashingMachine.instance.loadSettings();
     setupRefreshCurrentStatusTimer();
-  }
-
-  int toInt(bool val) {
-    return val ? 1 : 0;
-  }
-
-  bool toBool(int val) {
-    return val == 0 ? false : true;
-  }
-
-  void refreshCurrentStatus() async {
-    var url = Uri.http(hostname, '/current_status');
-
-    // Await the http get response, then decode the json-formatted response.
-    try {
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        setState(() {
-          // _current_status = jsonResponse.toString();
-          isRunning = toBool(jsonResponse["is_running"]);
-          isHold = toBool(jsonResponse["is_hold"]);
-          isLidClosed = toBool(jsonResponse["is_lid_closed"]);
-
-          taskSequencePointer = jsonResponse["task_sequence_pointer"];
-          task = jsonResponse["task"];
-
-          var taskLabel = washingMachineTasksLabel[task];
-          var runningLabel = isRunning
-              ? isHold
-                  ? "Hold"
-                  : "Running"
-              : "Paused";
-          var lidLabel = isLidClosed ? "Closed" : "Open";
-
-          centerLabel =
-              "$countDown s\n$taskSequencePointer->$taskLabel\n$runningLabel\n$lidLabel";
-
-          countDown = jsonResponse["count_down"];
-          message = "Connected";
-        });
-        debugPrint('$jsonResponse');
-      } else {
-        debugPrint('Request failed with status: ${response.statusCode}.');
-        setState(() {
-          message = "Not Connected";
-        });
-        debugPrint(message);
-      }
-    } catch (e) {
-      debugPrint('$e');
-      setState(() {
-        message = "Not Connected";
-      });
-      debugPrint(message);
-    }
-  }
-
-  void setNextTask(int tmpTask, int tmpCountDown) async {
-    var url = Uri.http(hostname, '/next_washing_machine_task');
-
-    List data = [tmpTask, tmpCountDown, 0, 0];
-    //encode Map to JSON
-    var body = json.encode(data);
-
-    try {
-      var response = await http.post(url,
-          headers: {"Content-Type": "application/json"}, body: body);
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        debugPrint('$jsonResponse');
-      } else {
-        debugPrint('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
-
-  void runMachine() async {
-    var url = Uri.http(hostname, '/run');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
-
-  void pauseMachine() async {
-    var url = Uri.http(hostname, '/pause');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
-
-  void holdMachine() async {
-    var url = Uri.http(hostname, '/hold');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
-
-  void skipMachine() async {
-    var url = Uri.http(hostname, '/skip');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
-  }
-
-  void resetMachine() async {
-    var url = Uri.http(hostname, '/reset');
-    try {
-      await http.get(url);
-    } catch (e) {
-      debugPrint('$e');
-    }
   }
 
   @override
@@ -259,7 +85,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
               const SizedBox(height: 16),
               Center(
                 child: Text(
-                  message,
+                  WashingMachine.instance.message,
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
@@ -274,7 +100,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       percent: 1,
                       progressColor: Colors.indigo,
                       center: Text(
-                        centerLabel,
+                        WashingMachine.instance.centerLabel,
                         style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -288,31 +114,31 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       children: [
                         FloatingActionButton(
                           heroTag: "runMachine",
-                          onPressed: runMachine,
+                          onPressed: WashingMachine.instance.runMachine,
                           tooltip: 'Run',
                           child: const Icon(Icons.play_arrow),
                         ),
                         FloatingActionButton(
                           heroTag: "pauseMachine",
-                          onPressed: pauseMachine,
+                          onPressed: WashingMachine.instance.pauseMachine,
                           tooltip: 'Pause',
                           child: const Icon(Icons.stop),
                         ),
                         FloatingActionButton(
                           heroTag: "holdMachine",
-                          onPressed: holdMachine,
+                          onPressed: WashingMachine.instance.holdMachine,
                           tooltip: 'Hold',
                           child: const Icon(Icons.pause),
                         ),
                         FloatingActionButton(
                           heroTag: "skipMachine",
-                          onPressed: skipMachine,
+                          onPressed: WashingMachine.instance.skipMachine,
                           tooltip: 'Skip',
                           child: const Icon(Icons.skip_next),
                         ),
                         FloatingActionButton(
                           heroTag: "resetMachine",
-                          onPressed: resetMachine,
+                          onPressed: WashingMachine.instance.resetMachine,
                           tooltip: 'Reset',
                           child: const Icon(Icons.reset_tv),
                         ),
@@ -324,35 +150,46 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       children: [
                         imageIconButtons(
                             onPressed: () => {
-                                  setNextTask(
-                                      1, int.parse(fillingTaskCountdown))
+                                  WashingMachine.instance.setNextTask(
+                                      1,
+                                      int.parse(WashingMachine
+                                          .instance.fillingTaskCountdown))
                                 },
                             text: "Fill",
                             icon: "filling.png"),
                         imageIconButtons(
                             onPressed: () => {
-                                  setNextTask(
-                                      2, int.parse(washingTaskCountdown))
+                                  WashingMachine.instance.setNextTask(
+                                      2,
+                                      int.parse(WashingMachine
+                                          .instance.washingTaskCountdown))
                                 },
                             text: "Wash",
                             icon: "washing.png"),
                         imageIconButtons(
                             onPressed: () => {
-                                  setNextTask(
-                                      3, int.parse(soakingTaskCountdown))
+                                  WashingMachine.instance.setNextTask(
+                                      3,
+                                      int.parse(WashingMachine
+                                          .instance.soakingTaskCountdown))
                                 },
                             text: "Soak",
                             icon: "soaking.png"),
                         imageIconButtons(
                             onPressed: () => {
-                                  setNextTask(
-                                      4, int.parse(drainingTaskCountdown))
+                                  WashingMachine.instance.setNextTask(
+                                      4,
+                                      int.parse(WashingMachine
+                                          .instance.drainingTaskCountdown))
                                 },
                             text: "Drain",
                             icon: "draining.png"),
                         imageIconButtons(
                             onPressed: () => {
-                                  setNextTask(5, int.parse(dryingTaskCountdown))
+                                  WashingMachine.instance.setNextTask(
+                                      5,
+                                      int.parse(WashingMachine
+                                          .instance.dryingTaskCountdown))
                                 },
                             text: "Dry",
                             icon: "drying.png"),
