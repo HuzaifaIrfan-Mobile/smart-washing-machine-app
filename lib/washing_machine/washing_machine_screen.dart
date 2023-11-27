@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import 'labels.dart';
+
 import 'washing_machine.dart';
 
 class WashingMachineScreen extends StatefulWidget {
@@ -150,50 +152,55 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         imageIconButtons(
-                            onPressed: () => {
-                                  WashingMachine.instance.setNextTask(
-                                      task: 1,
-                                      countdown: int.parse(WashingMachine
-                                          .instance.fillingTaskCountdown))
-                                },
-                            text: "Fill",
-                            icon: "filling.png"),
+                          onPressed: () => {
+                            WashingMachine.instance.setNextTask(
+                                task: 1,
+                                countdown: int.parse(WashingMachine
+                                    .instance.fillingTaskCountdown))
+                          },
+                          text: "Fill",
+                          task: 1,
+                        ),
                         imageIconButtons(
-                            onPressed: () => {
-                                  WashingMachine.instance.setNextTask(
-                                      task: 2,
-                                      countdown: int.parse(WashingMachine
-                                          .instance.washingTaskCountdown))
-                                },
-                            text: "Wash",
-                            icon: "washing.png"),
+                          onPressed: () => {
+                            WashingMachine.instance.setNextTask(
+                                task: 2,
+                                countdown: int.parse(WashingMachine
+                                    .instance.washingTaskCountdown))
+                          },
+                          text: "Wash",
+                          task: 2,
+                        ),
                         imageIconButtons(
-                            onPressed: () => {
-                                  WashingMachine.instance.setNextTask(
-                                      task: 3,
-                                      countdown: int.parse(WashingMachine
-                                          .instance.soakingTaskCountdown))
-                                },
-                            text: "Soak",
-                            icon: "soaking.png"),
+                          onPressed: () => {
+                            WashingMachine.instance.setNextTask(
+                                task: 3,
+                                countdown: int.parse(WashingMachine
+                                    .instance.soakingTaskCountdown))
+                          },
+                          text: "Soak",
+                          task: 3,
+                        ),
                         imageIconButtons(
-                            onPressed: () => {
-                                  WashingMachine.instance.setNextTask(
-                                      task: 4,
-                                      countdown: int.parse(WashingMachine
-                                          .instance.drainingTaskCountdown))
-                                },
-                            text: "Drain",
-                            icon: "draining.png"),
+                          onPressed: () => {
+                            WashingMachine.instance.setNextTask(
+                                task: 4,
+                                countdown: int.parse(WashingMachine
+                                    .instance.drainingTaskCountdown))
+                          },
+                          text: "Drain",
+                          task: 4,
+                        ),
                         imageIconButtons(
-                            onPressed: () => {
-                                  WashingMachine.instance.setNextTask(
-                                      task: 5,
-                                      countdown: int.parse(WashingMachine
-                                          .instance.dryingTaskCountdown))
-                                },
-                            text: "Dry",
-                            icon: "drying.png"),
+                          onPressed: () => {
+                            WashingMachine.instance.setNextTask(
+                                task: 5,
+                                countdown: int.parse(WashingMachine
+                                    .instance.dryingTaskCountdown))
+                          },
+                          text: "Dry",
+                          task: 5,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 28),
@@ -210,7 +217,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
 
 Widget imageIconButtons({
   required String text,
-  required String icon,
+  required int task,
   VoidCallback? onPressed,
 }) {
   return FloatingActionButton(
@@ -220,10 +227,7 @@ Widget imageIconButtons({
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        ImageIcon(
-          AssetImage("assets/$icon"),
-          size: 24,
-        ),
+        washingMachineTasksIcons[task],
         Text(text), // <-- Text
       ],
     ),
