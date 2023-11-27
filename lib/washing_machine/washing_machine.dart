@@ -31,6 +31,25 @@ class WashingMachine {
   String centerLabel = "Status";
   int countDown = 0;
 
+  List taskSequence = [
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0],
+    [0, 60, 0, 0]
+  ];
+
   String message = "Not Connected";
 
   void loadSettings() async {
@@ -79,10 +98,76 @@ class WashingMachine {
     loadSettings();
   }
 
-  void setNextTask(int tmpTask, int tmpCountDown) async {
+  void getTaskSequence() async {
+    var url = Uri.http(hostname, '/current_task_sequence');
+
+    // Await the http get response, then decode the json-formatted response.
+    try {
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+
+        taskSequencePointer = jsonResponse["task_sequence_pointer"];
+
+        taskSequence = jsonResponse["task_sequence"];
+
+        debugPrint('$jsonResponse');
+      } else {
+        debugPrint('Request failed with status: ${response.statusCode}.');
+
+        debugPrint("Cant Get Task Sequence");
+      }
+    } catch (e) {
+      debugPrint('$e');
+      debugPrint("Cant Get Task Sequence");
+    }
+  }
+
+  void setTaskSequence(List tmpTaskSequence) async {
+    var url = Uri.http(hostname, '/change_washing_machine_task_sequence');
+
+    // List data = [tmpTask, tmpCountDown, 0, 0];
+    // List tmpTaskSequence = [
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0],
+    //   [0, 60, 0, 0]
+    // ];
+
+    //encode Map to JSON
+    var body = json.encode(tmpTaskSequence);
+
+    try {
+      var response = await http.post(url,
+          headers: {"Content-Type": "application/json"}, body: body);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        debugPrint('$jsonResponse');
+      } else {
+        debugPrint('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
+  void setNextTask(
+      {int task = 0, int countdown = 60, int val1 = 0, int val2 = 0}) async {
     var url = Uri.http(hostname, '/next_washing_machine_task');
 
-    List data = [tmpTask, tmpCountDown, 0, 0];
+    List data = [task, countdown, val1, val2];
     //encode Map to JSON
     var body = json.encode(data);
 

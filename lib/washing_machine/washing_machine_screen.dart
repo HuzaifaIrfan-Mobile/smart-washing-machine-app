@@ -23,6 +23,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     Duration period = const Duration(seconds: 1);
     timer = Timer.periodic(period, (arg) {
       WashingMachine.instance.refreshCurrentStatus();
+      // WashingMachine.instance.getTaskSequence();
       setState(() {});
     });
   }
@@ -151,8 +152,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         imageIconButtons(
                             onPressed: () => {
                                   WashingMachine.instance.setNextTask(
-                                      1,
-                                      int.parse(WashingMachine
+                                      task: 1,
+                                      countdown: int.parse(WashingMachine
                                           .instance.fillingTaskCountdown))
                                 },
                             text: "Fill",
@@ -160,8 +161,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         imageIconButtons(
                             onPressed: () => {
                                   WashingMachine.instance.setNextTask(
-                                      2,
-                                      int.parse(WashingMachine
+                                      task: 2,
+                                      countdown: int.parse(WashingMachine
                                           .instance.washingTaskCountdown))
                                 },
                             text: "Wash",
@@ -169,8 +170,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         imageIconButtons(
                             onPressed: () => {
                                   WashingMachine.instance.setNextTask(
-                                      3,
-                                      int.parse(WashingMachine
+                                      task: 3,
+                                      countdown: int.parse(WashingMachine
                                           .instance.soakingTaskCountdown))
                                 },
                             text: "Soak",
@@ -178,8 +179,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         imageIconButtons(
                             onPressed: () => {
                                   WashingMachine.instance.setNextTask(
-                                      4,
-                                      int.parse(WashingMachine
+                                      task: 4,
+                                      countdown: int.parse(WashingMachine
                                           .instance.drainingTaskCountdown))
                                 },
                             text: "Drain",
@@ -187,8 +188,8 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                         imageIconButtons(
                             onPressed: () => {
                                   WashingMachine.instance.setNextTask(
-                                      5,
-                                      int.parse(WashingMachine
+                                      task: 5,
+                                      countdown: int.parse(WashingMachine
                                           .instance.dryingTaskCountdown))
                                 },
                             text: "Dry",
