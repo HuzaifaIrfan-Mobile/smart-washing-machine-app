@@ -310,18 +310,6 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                           tooltip: 'Skip',
                           child: const Icon(Icons.skip_next),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        FloatingActionButton(
-                          heroTag: "refreshCurrentStatus",
-                          onPressed: refreshCurrentStatus,
-                          tooltip: 'Refresh',
-                          child: const Icon(Icons.refresh),
-                        ),
                         FloatingActionButton(
                           heroTag: "resetMachine",
                           onPressed: resetMachine,
@@ -334,42 +322,40 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        FloatingActionButton(
-                          heroTag: "FillingTask",
-                          onPressed: () =>
-                              {setNextTask(1, int.parse(fillingTaskCountdown))},
-                          tooltip: 'Filling',
-                          child: const Icon(Icons.water_drop),
-                        ),
-                        FloatingActionButton(
-                          heroTag: "WashingTask",
-                          onPressed: () =>
-                              {setNextTask(2, int.parse(washingTaskCountdown))},
-                          tooltip: 'Washing',
-                          child: const Icon(Icons.wash),
-                        ),
-                        FloatingActionButton(
-                          heroTag: "SoakingTask",
-                          onPressed: () =>
-                              {setNextTask(3, int.parse(soakingTaskCountdown))},
-                          tooltip: 'Soaking',
-                          child: const Icon(Icons.pause),
-                        ),
-                        FloatingActionButton(
-                          heroTag: "DrainingTask",
-                          onPressed: () => {
-                            setNextTask(4, int.parse(drainingTaskCountdown))
-                          },
-                          tooltip: 'Draining',
-                          child: const Icon(Icons.exit_to_app),
-                        ),
-                        FloatingActionButton(
-                          heroTag: "DryingTask",
-                          onPressed: () =>
-                              {setNextTask(5, int.parse(dryingTaskCountdown))},
-                          tooltip: 'Drying',
-                          child: const Icon(Icons.dry),
-                        ),
+                        imageIconButtons(
+                            onPressed: () => {
+                                  setNextTask(
+                                      1, int.parse(fillingTaskCountdown))
+                                },
+                            text: "Fill",
+                            icon: "filling.png"),
+                        imageIconButtons(
+                            onPressed: () => {
+                                  setNextTask(
+                                      2, int.parse(washingTaskCountdown))
+                                },
+                            text: "Wash",
+                            icon: "washing.png"),
+                        imageIconButtons(
+                            onPressed: () => {
+                                  setNextTask(
+                                      3, int.parse(soakingTaskCountdown))
+                                },
+                            text: "Soak",
+                            icon: "soaking.png"),
+                        imageIconButtons(
+                            onPressed: () => {
+                                  setNextTask(
+                                      4, int.parse(drainingTaskCountdown))
+                                },
+                            text: "Drain",
+                            icon: "draining.png"),
+                        imageIconButtons(
+                            onPressed: () => {
+                                  setNextTask(5, int.parse(dryingTaskCountdown))
+                                },
+                            text: "Dry",
+                            icon: "drying.png"),
                       ],
                     ),
                     const SizedBox(height: 28),
@@ -382,4 +368,26 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
       ),
     );
   }
+}
+
+Widget imageIconButtons({
+  required String text,
+  required String icon,
+  VoidCallback? onPressed,
+}) {
+  return FloatingActionButton(
+    heroTag: "DryingTask",
+    onPressed: onPressed,
+    tooltip: 'Drying',
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        ImageIcon(
+          AssetImage("assets/$icon"),
+          size: 24,
+        ),
+        Text(text), // <-- Text
+      ],
+    ),
+  );
 }

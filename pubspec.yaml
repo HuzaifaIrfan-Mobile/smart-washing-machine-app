@@ -63,7 +63,12 @@ flutter:
   uses-material-design: true
   
   assets:
-    - assets/images/
+    - assets/waiting.png
+    - assets/filling.png
+    - assets/washing.png
+    - assets/soaking.png
+    - assets/draining.png
+    - assets/drying.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
