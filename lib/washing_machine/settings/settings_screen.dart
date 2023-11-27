@@ -183,14 +183,18 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: const Text('Save Settings'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: restartMachine,
-              child: const Text('Restart Machine'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: returnToHome,
-              child: const Text('Go back!'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: restartMachine,
+                  child: const Text('Restart Machine'),
+                ),
+                ElevatedButton(
+                  onPressed: returnToHome,
+                  child: const Text('Go back!'),
+                ),
+              ],
             ),
           ],
         ),
@@ -198,7 +202,6 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-
 
 // Center(
 //         child: Column(

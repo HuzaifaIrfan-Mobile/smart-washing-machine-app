@@ -376,9 +376,9 @@ Widget imageIconButtons({
   VoidCallback? onPressed,
 }) {
   return FloatingActionButton(
-    heroTag: "DryingTask",
+    heroTag: "hero$text",
     onPressed: onPressed,
-    tooltip: 'Drying',
+    tooltip: text,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
