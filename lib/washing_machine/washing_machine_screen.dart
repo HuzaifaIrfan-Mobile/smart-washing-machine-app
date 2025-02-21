@@ -42,22 +42,48 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
   }
 
   void getOctetHostname() async {
+    debugPrint('Getting Octet Hostname');
     String subnet = ipToCSubnet(await getLocalIp() ?? '192.168.18.101');
     print('subnet $subnet');
     String octet = WashingMachine.instance.octet;
     String ipaddress = '$subnet.$octet';
-     print('octetip $ipaddress');
-    if (await checkIPisWashingMachine(ipaddress)) {
+    print('octetip $ipaddress');
+
+    bool isWashingMachine = await checkIPisWashingMachine(ipaddress);
+
+    print("is washing machine $isWashingMachine $ipaddress");
+
+    if (isWashingMachine) {
+      print("Setting Octet Hostname $ipaddress");
       WashingMachine.instance.hostname = ipaddress;
+    } else {
+      print("No Octet Hostname machine $ipaddress");
     }
+  }
+
+  Future<void> forceOctetHostname() async {
+    debugPrint('Getting Octet Hostname');
+    String subnet = ipToCSubnet(await getLocalIp() ?? '192.168.18.101');
+    print('subnet $subnet');
+    String octet = WashingMachine.instance.octet;
+    String ipaddress = '$subnet.$octet';
+    print('octetip $ipaddress');
+
+    print("Force Octet Hostname $ipaddress");
+    WashingMachine.instance.hostname = ipaddress;
+  }
+
+  void initSettingsInOrder() async {
+    await WashingMachine.instance.loadSettings();
+    await forceOctetHostname();
   }
 
   @override
   void initState() {
     super.initState();
-    WashingMachine.instance.loadSettings();
-    // debugPrint('WashingMachineScreen');
-    getOctetHostname();
+
+    debugPrint('WashingMachineScreen');
+    initSettingsInOrder();
   }
 
   void openScannerScreen() async {
@@ -70,7 +96,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     if (result != null) {
       debugPrint("Returned Hostname: $result");
     }
-    WashingMachine.instance.loadSettings();
+    await WashingMachine.instance.loadSettings();
     setupRefreshCurrentStatusTimer();
   }
 
@@ -84,7 +110,7 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     if (result != null) {
       debugPrint("Returned Hostname: $result");
     }
-    WashingMachine.instance.loadSettings();
+    await WashingMachine.instance.loadSettings();
     setupRefreshCurrentStatusTimer();
   }
 

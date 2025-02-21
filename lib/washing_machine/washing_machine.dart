@@ -54,7 +54,7 @@ class WashingMachine {
 
   String message =  "X";
 
-  void loadSettings() async {
+  Future<void>  loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     hostname = (prefs.getString('hostname') ?? defaultHostname);
       octet = (prefs.getString('octet') ?? defaultOctet);
@@ -80,7 +80,7 @@ class WashingMachine {
     debugPrint("Loaded dryingTaskCountdown: $dryingTaskCountdown");
   }
 
-  void saveSettings() async {
+  Future<void>  saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
 
