@@ -101,7 +101,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               controller: hostnameController,
             ),
                         TextField(
-              decoration: const InputDecoration(labelText: "Octet"),
+              decoration: const InputDecoration(labelText: "Subnet Last Octet"),
               controller: octetController,
             ),
             TextField(
@@ -157,11 +157,11 @@ class SettingsScreenState extends State<SettingsScreen> {
                   onPressed: () {
                     WashingMachine.instance.restartMachine();
                   },
-                  child: const Text('Restart Machine'),
+                  child: const Text('Restart'),
                 ),
                 ElevatedButton(
                   onPressed: returnToHome,
-                  child: const Text('Go back!'),
+                  child: const Text('Save'),
                 ),
               ],
             ),
