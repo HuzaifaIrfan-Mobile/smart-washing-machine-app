@@ -15,12 +15,14 @@ class WashingMachine {
   /// the one and only instance of this singleton
   static final instance = WashingMachine._();
 
-  var hostname = defaultHostname;
-  var fillingTaskCountdown = defaultFillingTaskCountdown;
-  var washingTaskCountdown = defaultWashingTaskCountdown;
-  var soakingTaskCountdown = defaultSoakingTaskCountdown;
-  var drainingTaskCountdown = defaultDrainingTaskCountdown;
-  var dryingTaskCountdown = defaultDryingTaskCountdown;
+  String hostname = defaultHostname;
+  String octet = defaultOctet;
+
+  String fillingTaskCountdown = defaultFillingTaskCountdown;
+  String washingTaskCountdown = defaultWashingTaskCountdown;
+  String soakingTaskCountdown = defaultSoakingTaskCountdown;
+  String drainingTaskCountdown = defaultDrainingTaskCountdown;
+  String dryingTaskCountdown = defaultDryingTaskCountdown;
 
   bool isRunning = false;
   bool isHold = false;
@@ -50,11 +52,12 @@ class WashingMachine {
     [0, 60, 0, 0],
   ];
 
-  String message = "Not Connected";
+  String message =  "X";
 
   void loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     hostname = (prefs.getString('hostname') ?? defaultHostname);
+      octet = (prefs.getString('octet') ?? defaultOctet);
 
     fillingTaskCountdown = (prefs.getString('fillingTaskCountdown') ??
         defaultFillingTaskCountdown);
@@ -68,6 +71,7 @@ class WashingMachine {
         (prefs.getString('dryingTaskCountdown') ?? defaultDryingTaskCountdown);
 
     debugPrint("Loaded hostname: $hostname");
+        debugPrint("Loaded octet: $octet");
 
     debugPrint("Loaded fillingTaskCountdown: $fillingTaskCountdown");
     debugPrint("Loaded washingTaskCountdown: $washingTaskCountdown");
@@ -79,7 +83,9 @@ class WashingMachine {
   void saveSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+
     prefs.setString('hostname', hostname);
+    prefs.setString('octet', octet);
 
     prefs.setString('fillingTaskCountdown', fillingTaskCountdown);
     prefs.setString('washingTaskCountdown', washingTaskCountdown);
@@ -88,6 +94,7 @@ class WashingMachine {
     prefs.setString('dryingTaskCountdown', dryingTaskCountdown);
 
     debugPrint("Saved hostname: $hostname");
+        debugPrint("Saved octet: $octet");
 
     debugPrint("Saved fillingTaskCountdown: $fillingTaskCountdown");
     debugPrint("Saved washingTaskCountdown: $washingTaskCountdown");
@@ -279,19 +286,19 @@ class WashingMachine {
             "$countDown s\n$taskSequencePointer->$taskLabel\n$runningLabel\n$lidLabel";
 
         countDown = jsonResponse["count_down"];
-        message = "Connected";
+        message = "$hostname +";
         debugPrint('$jsonResponse');
       } else {
         debugPrint('Request failed with status: ${response.statusCode}.');
 
-        message = "Not Connected";
+        message = "$hostname X";
 
         debugPrint(message);
       }
     } catch (e) {
       debugPrint('$e');
 
-      message = "Not Connected";
+      message = "$hostname X";
 
       debugPrint(message);
     }

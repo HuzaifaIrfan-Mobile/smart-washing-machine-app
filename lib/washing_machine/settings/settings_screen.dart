@@ -14,6 +14,9 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController hostnameController =
       TextEditingController(text: defaultHostname);
+        TextEditingController octetController =
+      TextEditingController(text: defaultOctet);
+
 
   TextEditingController fillingTaskCountdownController =
       TextEditingController(text: defaultFillingTaskCountdown);
@@ -32,6 +35,8 @@ class SettingsScreenState extends State<SettingsScreen> {
     WashingMachine.instance.loadSettings();
     setState(() {
       hostnameController.text = WashingMachine.instance.hostname;
+            octetController.text = WashingMachine.instance.octet;
+
 
       fillingTaskCountdownController.text =
           WashingMachine.instance.fillingTaskCountdown;
@@ -49,6 +54,8 @@ class SettingsScreenState extends State<SettingsScreen> {
   void saveSettings() async {
     setState(() {
       WashingMachine.instance.hostname = hostnameController.text;
+            WashingMachine.instance.octet = octetController.text;
+
       WashingMachine.instance.fillingTaskCountdown =
           fillingTaskCountdownController.text;
       WashingMachine.instance.washingTaskCountdown =
@@ -67,6 +74,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   }
 
   void returnToHome() {
+    saveSettings();
     Navigator.pop(context, WashingMachine.instance.hostname);
   }
 
@@ -91,6 +99,10 @@ class SettingsScreenState extends State<SettingsScreen> {
             TextField(
               decoration: const InputDecoration(labelText: "Hostname"),
               controller: hostnameController,
+            ),
+                        TextField(
+              decoration: const InputDecoration(labelText: "Octet"),
+              controller: octetController,
             ),
             TextField(
               decoration:
@@ -136,11 +148,6 @@ class SettingsScreenState extends State<SettingsScreen> {
                 FilteringTextInputFormatter.digitsOnly
               ], // Only numbers can be entered
               controller: dryingTaskCountdownController,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: saveSettings,
-              child: const Text('Save Settings'),
             ),
             const SizedBox(height: 16),
             Row(

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'washing_machine/washing_machine_screen.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:wakelock/wakelock.dart';
+// import 'package:wakelock/wakelock.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (defaultTargetPlatform == TargetPlatform.android) {
 // YOUR CODE
-    Wakelock.enable();
+    // Wakelock.enable();
   }
 
   runApp(const WashingMachineApp());

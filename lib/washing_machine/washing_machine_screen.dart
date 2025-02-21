@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:smart_washing_machine_app/washing_machine/task_sequence_widget.dart';
 import 'settings/settings_screen.dart';
+import 'scanner/scanner_screen.dart';
 import 'dart:async';
+
+import 'package:lan_scanner/lan_scanner.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'labels.dart';
 
 import 'washing_machine.dart';
+
+import 'dart:io';
 
 class WashingMachineScreen extends StatefulWidget {
   const WashingMachineScreen({super.key});
@@ -35,11 +41,37 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     timer?.cancel();
   }
 
+  void getOctetHostname() async {
+    String subnet = ipToCSubnet(await getLocalIp() ?? '192.168.18.101');
+    print('subnet $subnet');
+    String octet = WashingMachine.instance.octet;
+    String ipaddress = '$subnet.$octet';
+     print('octetip $ipaddress');
+    if (await checkIPisWashingMachine(ipaddress)) {
+      WashingMachine.instance.hostname = ipaddress;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WashingMachine.instance.loadSettings();
     // debugPrint('WashingMachineScreen');
+    getOctetHostname();
+  }
+
+  void openScannerScreen() async {
+    WashingMachine.instance.pauseMachine();
+    cancelRefreshCurrentStatusTimer();
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ScannerScreen()),
+    );
+    if (result != null) {
+      debugPrint("Returned Hostname: $result");
+    }
+    WashingMachine.instance.loadSettings();
+    setupRefreshCurrentStatusTimer();
   }
 
   void openSettingsScreen() async {
@@ -77,6 +109,12 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       color: Colors.indigo,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  FloatingActionButton(
+                    heroTag: "openScanner",
+                    onPressed: openScannerScreen,
+                    tooltip: 'Open Scanner Screen',
+                    child: const Icon(Icons.wifi),
                   ),
                   FloatingActionButton(
                     heroTag: "openSettings",
