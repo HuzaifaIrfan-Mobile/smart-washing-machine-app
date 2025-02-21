@@ -72,62 +72,8 @@ class ScannerScreenState extends State<ScannerScreen> {
     });
   }
 
-  void getHostname() async {
-    final scanner = LanScanner(debugLogging: true);
-    final stream = scanner.icmpScan(
-      ipToCSubnet(await getLocalIp() ?? '192.168.127.101'),
-      scanThreads: 20,
-    );
-
-    stream.listen((Host host) async {
-      final ipaddress = host.internetAddress.address;
-
-      if (await checkIPisWashingMachine(ipaddress)) {
-        print('ip set $ipaddress');
-
-        setState(() {
-          hostnameController.text = ipaddress;
-        });
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    debugPrint('ScannerScreen');
-    loadSettings();
-    // getHostname();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scanner'),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            LinearProgressIndicator(value: progress),
-            const SizedBox(height: 8),
-            TextField(
-              decoration: const InputDecoration(labelText: "Hostname"),
-              controller: hostnameController,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: returnToHome,
-                  child: const Text('Connect'),
-                ),
-                FilledButton(
-                  onPressed: () async {
-                    setState(() {
+  void scanIP() async {
+ setState(() {
                       progress = 0.0;
                       _hosts.clear();
                     });
@@ -165,7 +111,43 @@ class ScannerScreenState extends State<ScannerScreen> {
                         }
                       });
                     });
-                  },
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('ScannerScreen');
+    loadSettings();
+    scanIP();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Scanner'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            LinearProgressIndicator(value: progress),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: const InputDecoration(labelText: "Hostname"),
+              controller: hostnameController,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: returnToHome,
+                  child: const Text('Connect'),
+                ),
+                FilledButton(
+                  onPressed: scanIP,
                   child: const Text('Scan'),
                 ),
               ],
