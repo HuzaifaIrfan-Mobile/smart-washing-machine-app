@@ -10,7 +10,6 @@ import 'dart:io';
 
 import '../washing_machine.dart';
 
-
 Future<String?> getLocalIp() async {
   for (var interface in await NetworkInterface.list()) {
     for (var addr in interface.addresses) {
@@ -53,6 +52,10 @@ class ScannerScreenState extends State<ScannerScreen> {
   TextEditingController hostnameController =
       TextEditingController(text: "192.168.22.101");
 
+  final List<Host> _hosts = <Host>[];
+
+  double? progress = 0.0;
+
   void returnToHome() {
     setState(() {
       WashingMachine.instance.hostname = hostnameController.text;
@@ -78,8 +81,8 @@ class ScannerScreenState extends State<ScannerScreen> {
 
     stream.listen((Host host) async {
       final ipaddress = host.internetAddress.address;
-      
-      if (await checkIPisWashingMachine(ipaddress) ) {
+
+      if (await checkIPisWashingMachine(ipaddress)) {
         print('ip set $ipaddress');
 
         setState(() {
@@ -94,7 +97,7 @@ class ScannerScreenState extends State<ScannerScreen> {
     super.initState();
     debugPrint('ScannerScreen');
     loadSettings();
-    getHostname();
+    // getHostname();
   }
 
   @override
@@ -108,6 +111,8 @@ class ScannerScreenState extends State<ScannerScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            LinearProgressIndicator(value: progress),
+            const SizedBox(height: 8),
             TextField(
               decoration: const InputDecoration(labelText: "Hostname"),
               controller: hostnameController,
@@ -120,8 +125,75 @@ class ScannerScreenState extends State<ScannerScreen> {
                   onPressed: returnToHome,
                   child: const Text('Connect'),
                 ),
+                FilledButton(
+                  onPressed: () async {
+                    setState(() {
+                      progress = 0.0;
+                      _hosts.clear();
+                    });
+
+                    // String? localIp = await getLocalIp();
+                    // await NetworkInfo().getWifiIP()
+
+                    final scanner = LanScanner(debugLogging: true);
+                    final stream = scanner.icmpScan(
+                      ipToCSubnet(await getLocalIp() ?? '192.168.127.101'),
+                      scanThreads: 20,
+                      progressCallback: (newProgress) {
+                        setState(() {
+                          progress = newProgress;
+                        });
+                      },
+                    );
+
+                    stream.listen((Host host) {
+                      setState(() async {
+                        _hosts.add(host);
+                        String ipaddress = host.internetAddress.address;
+                        bool isWashingMachine =
+                            await checkIPisWashingMachine(ipaddress);
+
+                        print(
+                            "is washing machine $isWashingMachine $ipaddress");
+
+                        if (isWashingMachine) {
+                          print('ip set $ipaddress');
+
+                          setState(() {
+                            hostnameController.text = ipaddress;
+                          });
+                        }
+                      });
+                    });
+                  },
+                  child: const Text('Scan'),
+                ),
               ],
             ),
+             const SizedBox(height: 8),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: _hosts.length,
+                itemBuilder: (context, index) {
+                  final host = _hosts[index];
+                  final address = host.internetAddress.address;
+                  final time = host.pingTime;
+
+                  // print(host);
+                     print(address);
+              
+                  
+
+
+                  return Card(
+                    child: ListTile(
+                      title: Text(address),
+                      trailing: Text(time != null ? time.toString() : 'N/A'),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
