@@ -12,11 +12,12 @@
 
 <hr>
 
-<div align="center">
 
-![cover](cover.jpg)
 
-</div>
+## App Demo
+
+[![Demo Video](cover.jpg)](https://www.youtube.com/shorts/Oas83ZrqOdc)
+
 
 ## Install
 
