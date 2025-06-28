@@ -5,12 +5,25 @@
   <p><h3 align="center">Machine Controller App with Flutter 🚀</h3></p>
 </div>
 
-[Design Doc](https://docs.google.com/document/d/1MRFvNtZnFDvZQWkwa0yLqg9GW3uRhPID49RJT2Vrk1A/edit?usp=sharing)
+[Hardware Design](https://github.com/HuzaifaIrfan-CAD/smart_washing_machine)
 &nbsp;&nbsp;•&nbsp;&nbsp;
-[ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan/smart_washing_machine_esp8266)
+[ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan-Firmware/smart_washing_machine_esp8266)
 
 
 <hr>
+
+## Features
+- [x] Save ESP8266 Hostname to Connect
+- [x] Save Default Tasks Countdown
+- [x] Restart Controller Button
+- [x] Connected Status
+- [x] Current countdown, sequence index,  task, running + hold status, Lid Closed State
+- [x] Run / Pause Button for Current Task
+- [x] Hold / Skip Button for Current Task
+- [x] Refresh Controller Status and Reset to Task Sequence 0 Button
+- [x] Manually Set Next Task
+  - [ ] Manually Set Countdown in UI
+- [ ] Add and Set Tasks Sequence to run Fully Automatically on the Controller
 
 
 
@@ -30,6 +43,14 @@ flutter pub get
 ```bash
 flutter run
 ```
+
+## Operation
+
+![Overview](overview.drawio.png)
+
+- Power on the Machine
+- Open the “Smart Washing Machine” App on your Mobile Phone
+
 
 ## 🤝🏻 &nbsp;Connect with Me
 
