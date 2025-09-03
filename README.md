@@ -3,9 +3,9 @@
   <p><h3 align="center">Machine Controller App with Flutter 🚀</h3></p>
 </div>
 
-[Hardware Design](https://github.com/HuzaifaIrfan-IoT/smart_washing_machine)
+[Hardware Design](https://github.com/HuzaifaIrfan-IoT/smart-washing-machine)
 &nbsp;&nbsp;•&nbsp;&nbsp;
-[ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan-Firmware/smart_washing_machine_esp8266)
+[ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan-Firmware/smart-washing-machine-esp8266)
 
 
 <hr>
