@@ -1,5 +1,3 @@
-<br />
-
 <div align="center">
   <h1>Smart Washing Machine Android App</h1>
   <p><h3 align="center">Machine Controller App with Flutter 🚀</h3></p>
@@ -31,6 +29,7 @@
 
 [![Demo Video](cover.jpg)](https://www.youtube.com/shorts/Oas83ZrqOdc)
 
+# 🚀 Usage
 
 ## Install
 
@@ -38,7 +37,7 @@
 flutter pub get
 ```
 
-## Usage
+## Run
 
 ```bash
 flutter run
@@ -51,18 +50,17 @@ flutter run
 - Power on the Machine
 - Open the “Smart Washing Machine” App on your Mobile Phone
 
+# 📝 Documentation
 
-## 🤝🏻 &nbsp;Connect with Me
+# 📚 References
 
-<p align="center">
-<a href="https://www.huzaifairfan.com"><img src="https://img.shields.io/badge/-huzaifairfan.com-1aa260?style=flat&logo=Google-Chrome&logoColor=white"/></a>
-<a href="https://www.linkedin.com/in/huzaifairfan/"><img src="https://img.shields.io/badge/-Huzaifa%20Irfan-0072b1?style=flat&logo=Linkedin&logoColor=white"/></a>
-<a href="https://github.com/HuzaifaIrfan/"><img src="https://img.shields.io/badge/-Huzaifa%20Irfan-4078c0?style=flat&logo=Github&logoColor=white"/></a>
-<a href="mailto:contact@huzaifairfan.com"><img src="https://img.shields.io/badge/-contact@huzaifairfan.com-c71610?style=flat&logo=Gmail&logoColor=white"/></a>
-<a href="https://www.instagram.com/huzaifairfan2001/"><img src="https://img.shields.io/badge/-@huzaifairfan2001-cd486b?style=flat&logo=Instagram&logoColor=white"/></a>
-<a href="https://www.facebook.com/huzaifairfan2001/"><img src="https://img.shields.io/badge/-@huzaifairfan2001-4267B2?style=flat&logo=Facebook&logoColor=white"/></a>
-</p>
 
-## License
+# 🤝🏻 Connect with Me
 
-Licensed under the MIT License, Copyright 2023 Huzaifa Irfan. [LICENSE](LICENSE)
+[![GitHub](https://img.shields.io/badge/Github-%23222.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/HuzaifaIrfan/)
+[![Website](https://img.shields.io/badge/Website-%23222.svg?style=for-the-badge&logo=google-chrome&logoColor==%234285F4)](https://www.huzaifairfan.com)
+
+# 📜 License
+
+Licensed under the GPL3 License, Copyright 2025 Huzaifa Irfan. [LICENSE](LICENSE)
+
