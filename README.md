@@ -27,6 +27,8 @@
 
 ## App Demo Video
 
+[![Android Controlled Washing Machine](https://ytcards.demolab.com/?id=oTMUrj1S7qQ&title=Android+Controlled+Washing+Machine&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/oTMUrj1S7qQ)
+
 [![Demo Video](cover.jpg)](https://www.youtube.com/shorts/Oas83ZrqOdc)
 
 # 🚀 Usage
@@ -55,7 +57,15 @@ flutter run
 # 📚 References
 
 
+
 # 🤝🏻 Connect with Me
+
+## Huzaifa Irfan
+
+- 💬 Just want to say hi?
+- 🚀 Have a project to discuss?
+- 📧 Email me @: [hi@huzaifairfan.com](mailto:hi@huzaifairfan.com)
+- 📞 Visit my Profile for other channels:
 
 [![GitHub](https://img.shields.io/badge/Github-%23222.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/HuzaifaIrfan/)
 [![Website](https://img.shields.io/badge/Website-%23222.svg?style=for-the-badge&logo=google-chrome&logoColor==%234285F4)](https://www.huzaifairfan.com)
@@ -63,5 +73,5 @@ flutter run
 # 📜 License
 
 Licensed under the GPL3 License, Copyright 2025 Huzaifa Irfan. [LICENSE](LICENSE)
-
+<hr />
 Last Updated on 2025-02-21
