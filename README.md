@@ -27,9 +27,9 @@
 
 ## App Demo Video
 
-[![Android Controlled Washing Machine](https://ytcards.demolab.com/?id=oTMUrj1S7qQ&title=Android+Controlled+Washing+Machine&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/oTMUrj1S7qQ)
+[![Android Controlled Washing Machine](https://ytcards.demolab.com/?id=ZOG02uKlICg&title=Android+Controlled+Washing+Machine&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/ZOG02uKlICg)
+[![Washing Machine App](https://ytcards.demolab.com/?id=Oas83ZrqOdc&title=Washing+Machine+App&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/Oas83ZrqOdc)
 
-[![Demo Video](cover.jpg)](https://www.youtube.com/shorts/Oas83ZrqOdc)
 
 # 🚀 Usage
 
