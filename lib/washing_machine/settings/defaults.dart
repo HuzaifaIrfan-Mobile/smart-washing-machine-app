@@ -1,4 +1,4 @@
-String defaultHostname = "192.168.10.225";
+String defaultHostname = "192.168.18.101";
 String defaultOctet = "101";
 String defaultFillingTaskCountdown = "600";
 String defaultWashingTaskCountdown = "300";

@@ -12,22 +12,28 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class SettingsScreenState extends State<SettingsScreen> {
-  TextEditingController hostnameController =
-      TextEditingController(text: defaultHostname);
-        TextEditingController octetController =
-      TextEditingController(text: defaultOctet);
+  TextEditingController hostnameController = TextEditingController(
+    text: defaultHostname,
+  );
+  TextEditingController octetController = TextEditingController(
+    text: defaultOctet,
+  );
 
-
-  TextEditingController fillingTaskCountdownController =
-      TextEditingController(text: defaultFillingTaskCountdown);
-  TextEditingController washingTaskCountdownController =
-      TextEditingController(text: defaultWashingTaskCountdown);
-  TextEditingController soakingTaskCountdownController =
-      TextEditingController(text: defaultSoakingTaskCountdown);
-  TextEditingController drainingTaskCountdownController =
-      TextEditingController(text: defaultDrainingTaskCountdown);
-  TextEditingController dryingTaskCountdownController =
-      TextEditingController(text: defaultDryingTaskCountdown);
+  TextEditingController fillingTaskCountdownController = TextEditingController(
+    text: defaultFillingTaskCountdown,
+  );
+  TextEditingController washingTaskCountdownController = TextEditingController(
+    text: defaultWashingTaskCountdown,
+  );
+  TextEditingController soakingTaskCountdownController = TextEditingController(
+    text: defaultSoakingTaskCountdown,
+  );
+  TextEditingController drainingTaskCountdownController = TextEditingController(
+    text: defaultDrainingTaskCountdown,
+  );
+  TextEditingController dryingTaskCountdownController = TextEditingController(
+    text: defaultDryingTaskCountdown,
+  );
 
   // SettingsScreenState() {}
 
@@ -35,8 +41,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     WashingMachine.instance.loadSettings();
     setState(() {
       hostnameController.text = WashingMachine.instance.hostname;
-            octetController.text = WashingMachine.instance.octet;
-
+      octetController.text = WashingMachine.instance.octet;
 
       fillingTaskCountdownController.text =
           WashingMachine.instance.fillingTaskCountdown;
@@ -54,7 +59,7 @@ class SettingsScreenState extends State<SettingsScreen> {
   void saveSettings() async {
     setState(() {
       WashingMachine.instance.hostname = hostnameController.text;
-            WashingMachine.instance.octet = octetController.text;
+      WashingMachine.instance.octet = octetController.text;
 
       WashingMachine.instance.fillingTaskCountdown =
           fillingTaskCountdownController.text;
@@ -88,68 +93,102 @@ class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: Container(
         padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
           children: <Widget>[
             TextField(
               decoration: const InputDecoration(labelText: "Hostname"),
               controller: hostnameController,
             ),
-                        TextField(
+            TextField(
               decoration: const InputDecoration(labelText: "Subnet Last Octet"),
               controller: octetController,
             ),
             TextField(
-              decoration:
-                  const InputDecoration(labelText: "Filling Task Countdown"),
+              decoration: const InputDecoration(
+                labelText: "Filling Task Countdown",
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
               ], // Only numbers can be entered
               controller: fillingTaskCountdownController,
             ),
             TextField(
-              decoration:
-                  const InputDecoration(labelText: "Washing Task Countdown"),
+              decoration: const InputDecoration(
+                labelText: "Washing Task Countdown",
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
               ], // Only numbers can be entered
               controller: washingTaskCountdownController,
             ),
             TextField(
-              decoration:
-                  const InputDecoration(labelText: "Soaking Task Countdown"),
+              decoration: const InputDecoration(
+                labelText: "Soaking Task Countdown",
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
               ], // Only numbers can be entered
               controller: soakingTaskCountdownController,
             ),
             TextField(
-              decoration:
-                  const InputDecoration(labelText: "Draining Task Countdown"),
+              decoration: const InputDecoration(
+                labelText: "Draining Task Countdown",
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
               ], // Only numbers can be entered
               controller: drainingTaskCountdownController,
             ),
             TextField(
-              decoration:
-                  const InputDecoration(labelText: "Drying Task Countdown"),
+              decoration: const InputDecoration(
+                labelText: "Drying Task Countdown",
+              ),
               keyboardType: TextInputType.number,
               inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.digitsOnly,
               ], // Only numbers can be entered
               controller: dryingTaskCountdownController,
             ),
             const SizedBox(height: 16),
+
+            GestureDetector(
+              onTap: () async {
+                await Clipboard.setData(
+                  const ClipboardData(text: 'https://huzaifairfan.com'),
+                );
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Website URL copied to clipboard'),
+                    ),
+                  );
+                }
+              },
+              child: const Column(
+                children: [
+                  Text('v1.1.1'),
+                  SizedBox(height: 4),
+                  Text('Developed by Huzaifa Irfan'),
+                  Text(
+                    'huzaifairfan.com',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

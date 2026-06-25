@@ -105,7 +105,7 @@ class WashingMachine {
     loadSettings();
   }
 
-  void getTaskSequence() async {
+  Future<void> getTaskSequence() async {
     var url = Uri.http(hostname, '/current_task_sequence');
 
     // Await the http get response, then decode the json-formatted response.
@@ -136,7 +136,7 @@ class WashingMachine {
     }
   }
 
-  void setTaskSequence(List tmpTaskSequence) async {
+  Future<void> setTaskSequence(List tmpTaskSequence) async {
     var url = Uri.http(hostname, '/change_washing_machine_task_sequence');
 
     // List data = [tmpTask, tmpCountDown, 0, 0];
@@ -174,13 +174,19 @@ class WashingMachine {
     } catch (e) {
       debugPrint('$e');
     }
+
+
+        debugPrint("setTaskSequence");
+     debugPrint('$tmpTaskSequence');
+
   }
 
-  void setNextTask(
+  Future<void> setNextTask(
       {int task = 0, int countdown = 60, int val1 = 0, int val2 = 0}) async {
     var url = Uri.http(hostname, '/next_washing_machine_task');
 
     List data = [task, countdown, val1, val2];
+
     //encode Map to JSON
     var body = json.encode(data);
 
@@ -196,60 +202,75 @@ class WashingMachine {
     } catch (e) {
       debugPrint('$e');
     }
+
+        debugPrint("setNextTask");
+     debugPrint('$data');
   }
 
-  void runMachine() async {
+  Future<void> runMachine() async {
     var url = Uri.http(hostname, '/run');
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+
+          debugPrint("runMachine");
   }
 
-  void pauseMachine() async {
+  Future<void> pauseMachine() async {
     var url = Uri.http(hostname, '/pause');
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+         debugPrint("pauseMachine");
   }
 
-  void holdMachine() async {
+  Future<void> holdMachine() async {
     var url = Uri.http(hostname, '/hold');
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+
+            debugPrint("holdMachine");
   }
 
-  void skipMachine() async {
+  Future<void> skipMachine() async {
     var url = Uri.http(hostname, '/skip');
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+
+        debugPrint("skipMachine");
   }
 
-  void resetMachine() async {
+  Future<void> resetMachine() async {
     var url = Uri.http(hostname, '/reset');
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+      debugPrint("resetMachine");
   }
 
-  void restartMachine() async {
+  Future<void> restartMachine() async {
     var url = Uri.http(hostname, '/restart');
+
+    
     try {
       await http.get(url);
     } catch (e) {
       debugPrint('$e');
     }
+
+      debugPrint("restartMachine");
   }
 
   int toInt(bool val) {
@@ -260,7 +281,7 @@ class WashingMachine {
     return val == 0 ? false : true;
   }
 
-  void refreshCurrentStatus() async {
+  Future<void> refreshCurrentStatus() async {
     var url = Uri.http(hostname, '/current_status');
 
     try {

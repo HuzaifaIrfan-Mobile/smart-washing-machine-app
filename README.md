@@ -7,7 +7,10 @@
 &nbsp;&nbsp;•&nbsp;&nbsp;
 [ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan-Firmware/smart-washing-machine-esp8266)
 
+<hr />
+Last Updated on 2025-02-21 
 
+v1.1.1 Updated on 2026-06-25
 <hr>
 
 ## Features
@@ -21,7 +24,7 @@
 - [x] Refresh Controller Status and Reset to Task Sequence 0 Button
 - [x] Manually Set Next Task
   - [ ] Manually Set Countdown in UI
-- [ ] Add and Set Tasks Sequence to run Fully Automatically on the Controller
+- [x] Add and Set Tasks Sequence to run Fully Automatically on the Controller
 
 
 
@@ -73,5 +76,4 @@ flutter run
 # 📜 License
 
 Licensed under the GPL3 License, Copyright 2025 Huzaifa Irfan. [LICENSE](LICENSE)
-<hr />
-Last Updated on 2025-02-21
+

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_washing_machine_app/washing_machine/task_sequence_widget.dart';
+
+import 'preset/preset_screen.dart';
 import 'settings/settings_screen.dart';
 import 'scanner/scanner_screen.dart';
 import 'dart:async';
@@ -28,20 +30,25 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
     setupRefreshCurrentStatusTimer();
   }
 
-  void setupRefreshCurrentStatusTimer() {
-    WashingMachine.instance.getTaskSequence();
+  Future<void> setupRefreshCurrentStatusTimer() async {
+    WashingMachine.instance.refreshCurrentStatus();
+
+    cancelRefreshCurrentStatusTimer();
+
     Duration period = const Duration(seconds: 1);
     timer = Timer.periodic(period, (arg) {
       WashingMachine.instance.refreshCurrentStatus();
       setState(() {});
     });
+
+    WashingMachine.instance.getTaskSequence();
   }
 
-  void cancelRefreshCurrentStatusTimer() {
+  Future<void> cancelRefreshCurrentStatusTimer() async {
     timer?.cancel();
   }
 
-  void getOctetHostname() async {
+  Future<void> getOctetHostname() async {
     debugPrint('Getting Octet Hostname');
     String subnet = ipToCSubnet(await getLocalIp() ?? '192.168.18.101');
     print('subnet $subnet');
@@ -84,6 +91,18 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
 
     debugPrint('WashingMachineScreen');
     initSettingsInOrder();
+  }
+
+  void openPresetScreen() async {
+    await WashingMachine.instance.pauseMachine();
+    await cancelRefreshCurrentStatusTimer();
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const PresetScreen()),
+    );
+
+    await WashingMachine.instance.loadSettings();
+    await setupRefreshCurrentStatusTimer();
   }
 
   void openScannerScreen() async {
@@ -135,6 +154,18 @@ class WashingMachineScreenState extends State<WashingMachineScreen> {
                       color: Colors.indigo,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  FloatingActionButton(
+                    heroTag: "refreshTimer",
+                    onPressed: setupRefreshCurrentStatusTimer,
+                    tooltip: 'refreshTimer',
+                    child: const Icon(Icons.refresh),
+                  ),
+                  FloatingActionButton(
+                    heroTag: "openPreset",
+                    onPressed: openPresetScreen,
+                    tooltip: 'Open Preset Screen',
+                    child: const Icon(Icons.tune),
                   ),
                   FloatingActionButton(
                     heroTag: "openScanner",
