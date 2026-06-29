@@ -16,7 +16,7 @@ class _TaskDef {
 const List<_TaskDef> kTasks = [
   _TaskDef('Waiting',    1,   5,    60),    // 0
   _TaskDef('Water Fill', 30,  300,   1200),  // 1
-  _TaskDef('Spin',       30,  300,  600),   // 2
+  _TaskDef('Wash',       30,  300,  600),   // 2
   _TaskDef('Soak',       60,  300,  1800),  // 3
   _TaskDef('Drain',      120, 300,  1200),  // 4
   _TaskDef('Dry',        60,  120,  300),   // 5
@@ -29,19 +29,19 @@ const List<_TaskDef> kTasks = [
 final List<List<int>> kDefaultSequence = [
   [0, 1,   0, 0],  //  1 - Waiting
   [1, 300, 0, 0],  //  2 - Fill
-  [2, 300, 5, 2],  //  3 - Wash (spin)
+  [2, 300, 5, 2],  //  3 - Wash
   [3, 300, 0, 0],  //  4 - Soak
-  [4, 300, 0, 0],  //  5 - Drain
-  [1, 300, 0, 0],  //  6 - Fill
-  [2, 300, 5, 2],  //  7 - Wash (spin)
-  [4, 300, 0, 0],  //  8 - Drain
-  [2, 120, 0, 0],  //  9 - Spin (dry spin)
+  [4, 600, 0, 0],  //  5 - Drain
+  [0, 1,   0, 0],  //  6 - Wait
+  [0, 1,   0, 0],  //  7 - Wait
+  [0, 1,   0, 0],  //  8 - Wait
+  [0, 1,   0, 0],  //  9 - Wait
   [0, 1,   0, 0],  // 10 - Wait
-  [0, 1,   0, 0],  // 11 - Wait
-  [0, 1,   0, 0],  // 12 - Wait
-  [0, 1,   0, 0],  // 13 - Wait
-  [0, 1,   0, 0],  // 14 - Wait
-  [0, 1,   0, 0],  // 15 - Wait
+  [1, 300, 0, 0],  // 11 - Fill
+  [2, 300, 5, 2],  // 12 - Wash
+  [4, 600, 0, 0],  // 13 - Drain
+  [5, 120, 0, 0],  // 14 - Dry
+  [4, 300, 0, 0],  // 15 - Drain
   [6, 20,  0, 0],  // 16 - End
 ];
 

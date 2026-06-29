@@ -8,9 +8,9 @@
 [ESP8266 Controller Firmware](https://github.com/HuzaifaIrfan-Firmware/smart-washing-machine-esp8266)
 
 <hr />
-Last Updated on 2025-02-21 
 
-v1.1.1 Updated on 2026-06-25
+v1.2 Updated on 2026-06-29
+
 <hr>
 
 ## Features
@@ -23,7 +23,6 @@ v1.1.1 Updated on 2026-06-25
 - [x] Hold / Skip Button for Current Task
 - [x] Refresh Controller Status and Reset to Task Sequence 0 Button
 - [x] Manually Set Next Task
-  - [ ] Manually Set Countdown in UI
 - [x] Add and Set Tasks Sequence to run Fully Automatically on the Controller
 
 
@@ -36,24 +35,51 @@ v1.1.1 Updated on 2026-06-25
 
 # 🚀 Usage
 
-## Install
-
-```bash
-flutter pub get
-```
-
-## Run
-
-```bash
-flutter run
-```
-
 ## Operation
 
 ![Overview](overview.drawio.png)
 
 - Power on the Machine
-- Open the “Smart Washing Machine” App on your Mobile Phone
+- Open the "Washing Machine” App on your Mobile Phone
+- Open Settings Icon
+- Set Static IP Address of Wwashing Machine and last octet of IP
+- Save and Back
+- Open Presets to change if required
+- Run Preset and Go Back
+- Refresh to Check Task Sequence sent to Washing Machine
+- Start the Machine
+
+> [!WARNING]
+> - Always Set Drain Task Before and After Dry Task
+> - Close the Lid for Dry Task to run or it will be paused on Dry Task
+
+
+# 🛠️ Development
+
+## Install Lib
+
+```bash
+flutter pub get
+```
+
+## Check Flutter Devices
+```bash
+flutter devices
+```
+
+## Run
+
+```bash
+flutter run --release
+```
+
+## Build APK
+
+```bash
+flutter build apk
+```
+
+
 
 # 📝 Documentation
 

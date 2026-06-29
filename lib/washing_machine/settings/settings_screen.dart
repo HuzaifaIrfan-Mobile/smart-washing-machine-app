@@ -174,7 +174,7 @@ class SettingsScreenState extends State<SettingsScreen> {
               },
               child: const Column(
                 children: [
-                  Text('v1.1.1'),
+                  Text('v1.2.0'),
                   SizedBox(height: 4),
                   Text('Developed by Huzaifa Irfan'),
                   Text(
