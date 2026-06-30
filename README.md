@@ -13,6 +13,10 @@ v1.2 Updated on 2026-06-29
 
 <hr>
 
+## 🎬 Demo
+
+[▶️![Demo](https://img.youtube.com/vi/0KOfMb7EBvc/maxresdefault.jpg)](https://www.youtube.com/watch?v=0KOfMb7EBvc)
+
 ## Features
 - [x] Save ESP8266 Hostname to Connect
 - [x] Save Default Tasks Countdown
@@ -27,10 +31,6 @@ v1.2 Updated on 2026-06-29
 
 
 
-## App Demo Video
-
-[![Android Controlled Washing Machine](https://ytcards.demolab.com/?id=ZOG02uKlICg&title=Android+Controlled+Washing+Machine&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/ZOG02uKlICg)
-[![Washing Machine App](https://ytcards.demolab.com/?id=Oas83ZrqOdc&title=Washing+Machine+App&lang=en&timestamp=1698796800&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=300&border_radius=5&duration=0)](https://www.youtube.com/shorts/Oas83ZrqOdc)
 
 
 # 🚀 Usage
